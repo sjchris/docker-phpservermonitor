@@ -1,0 +1,47 @@
+version: '2'
+services:
+
+  phpservermonitor:
+    image: phpservermonitor:latest
+    container_name: phpservermonitor
+    restart: always
+    environment:
+      - TIME_ZONE='America/Chicago'
+      - PSM_REFRESH_RATE_SECONDS=15
+      - PSM_AUTO_CONFIGURE=true
+      - MYSQL_HOST=database
+      - MYSQL_USER=phpservermonitor
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=phpservermonitor
+      - MYSQL_DATABASE_PREFIX=psm_
+    ports:
+      - 8080:80
+    dns:
+      - 192.168.3.8
+    links:
+      - "db:database"
+    volumes:
+     - /sessions
+
+  db:
+    image: mariadb
+    container_name: phpservermonitor_mariadb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=phpservermonitor
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=phpservermonitor
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: phpservermonitor_phpmyadmin
+  #   restart: always
+  #   environment:
+  #     - MYSQL_HOST=database
+  #   ports:
+  #     - 8081:80
+  #   volumes:
+  #     - /sessions
+  #   links:
+  #     - "db:database"
