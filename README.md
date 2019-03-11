@@ -94,3 +94,8 @@ Configuration should be automatic if the envirmental varable is set `PSM_AUTO_CO
 * **Data Password:** YOUR_PASSWORD
 * **Table Previx:** psm_
 
+-----
+
+## Know Bugs
+
+ - Servers whos status is cheched though "Ping" will fail when the "Update" button is pressed in the UI. This is because the UI runs as user 'www-data', where as the cron refresh task runs as root. You need root permissions to run SOCK_RAW on Unix systems, to the best of my knowledge there is no way around this. https://secure.php.net/manual/en/function.socket-create.php 
