@@ -1,7 +1,7 @@
 
-# PHPServerMonitor in Docker (Last version 3.3.2)
+# PHPServerMonitor in Docker (Last version 3.4.5)
 
-### Last update : 2019/03/11 . Created repository with version 3.3.2
+### Last update : 2020/04/08 . Created repository with version 3.4.5
 #### Please open issues on [github](https://github.com/Quentinvarquet/docker-phpservermonitor/issues)
 
 ### PHPServerMonitor
@@ -35,7 +35,7 @@ cd phpservermonitor/
 
 # Build Docker Image
 docker build --no-cache \
-  --tag "phpservermonitor:3.3.2" \
+  --tag "phpservermonitor:3.4.5" \
   --tag "phpservermonitor:latest" \
   --file Dockerfile .
 ```

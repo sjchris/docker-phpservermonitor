@@ -47,7 +47,7 @@ RUN mkdir '/sessions'; \
 VOLUME /sessions
 
 # Build Environment Variables
-ENV VERSION 3.3.2
+ENV VERSION 3.4.5
 ENV URL https://github.com/phpservermon/phpservermon/releases/download/v${VERSION}/phpservermon-${VERSION}.tar.gz
 
 # Extract Repo HTML Files
