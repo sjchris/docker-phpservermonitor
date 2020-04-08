@@ -1,11 +1,8 @@
 
-# PHPServerMonitor in Docker (Last version 3.1.1)
+# PHPServerMonitor in Docker (Last version 3.3.2)
 
-
-
-### Last update : 08/09/2016 . Created repository with version 3.1.1
+### Last update : 2019/03/11 . Created repository with version 3.3.2
 #### Please open issues on [github](https://github.com/Quentinvarquet/docker-phpservermonitor/issues)
-
 
 ### PHPServerMonitor
 
@@ -20,58 +17,85 @@ More information :
 * [What is docker](https://www.docker.com/what-docker)
 * [How to Create a Docker Business Case](https://www.brianchristner.io/how-to-create-a-docker-business-case/)
 
-### Information
+### Information & Build
 
-This is the unofficial (updated when I can !) repository for PHPServerMonitor
+This is the official repository for PHPServerMonitor
+It will be updated every time there is a new version of PHPServerMonitor available, or you can build yourself with.
 
-I will update the repository every time there is a new version of PHPServerMonitor available
+```
+## Build and Deploy PHPServerMonitor with Docker
 
+# Working Dir
+mkdir -p "/tmp/php-server-monitor"
+cd "/tmp/php-server-monitor"
 
+# Clone Git Repo
+git clone https://github.com/phpservermon/phpservermonitor.git phpservermonitor
+cd phpservermonitor/
 
-### Supported tags and respective Dockerfile links
-
-
-#### Example
-
-```bash
-docker run --name phpservermonitor -p 80:80 -d quentinv/phpservermonitor:latest
+# Build Docker Image
+docker build --no-cache \
+  --tag "phpservermonitor:3.3.2" \
+  --tag "phpservermonitor:latest" \
+  --file Dockerfile .
 ```
 
 
-* **latest** : Last version of PHPServerMonitor
+## Option 1 (recommended): Deploy Container Stack w/ Docker-Compose & Random Passwords
 
-#### Tags
+```
+# Generate Random Passwords
+export "MYSQL_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)" "MYSQL_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
 
-**For now, the only available tag is "latest"**
+# Deploy with Docker-Compose
+docker-compose up -d
+```
 
- [```latest```](https://github.com/Quentinvarquet/docker-phpservermonitor/blob/master/dockerfile/3.1.1/Dockerfile)
+## Option 2: Deploy Seperated Container w/ Docker-Compose & Random Passwords
 
+```
+# Start Containers w/ Random Passwords
+export "MYSQL_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)" "MYSQL_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
 
-### Docker Compose
+# phpservermonitor
+docker run -d --name phpservermonitor \
+  --restart always \
+  --link phpservermonitor_mariadb \
+  -v /sessions \
+  --dns=192.168.3.8 \
+  -p 8080:80 \
+  -e TIME_ZONE='America/Chicago' \
+  -e PSM_REFRESH_RATE_SECONDS=15 \
+  -e PSM_AUTO_CONFIGURE=true \
+  -e MYSQL_HOST=database \
+  -e MYSQL_USER=phpservermonitor \
+  -e MYSQL_PASSWORD=${MYSQL_PASSWORD} \
+  -e MYSQL_DATABASE=phpservermonitor \
+  -e MYSQL_DATABASE_PREFIX=psm_ \
+  phpservermonitor:latest
 
-I created a docker-compose.yml with twi containers : PhpServerMonitor and MySQL
+# phpservermonitor_mariadb
+docker run -d --name phpservermonitor_mariadb \
+  --restart always \
+  -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
+  -e MYSQL_USER=phpservermonitor \
+  -e MYSQL_PASSWORD=${MYSQL_PASSWORD} \
+  -e MYSQL_DATABASE=phpservermonitor \
+  mariadb
+```
 
+#### Database Configuration
 
-#### Docker Compose files
+Configuration should be automatic if the envirmental varable is set `PSM_AUTO_CONFIGURE=true`. Otherwise the configuration window should be prepopulated to the following.
 
-
-[```latest```](https://github.com/Quentinvarquet/docker-phpservermonitor/blob/master/docker-compose/phpservermonitor-3.1.1/docker-compose.yml)
-
-
-#### Database configuration
-
-
-If you used my docker-compose.yml file you have to : 
-
-1 - Go on phpmyadmin : http://ip_of_your_server:81  (If you don't want to use phpmyadmin for security reasons you can just delete the container in my docker-compose.yml file and create your database with the command line from the container MySQL.)
-2 - Create a database : monitor (you can use another name)
-3 - Go on PhpServerMonitor : http://ip_of_your_server
-
-![install](https://raw.githubusercontent.com/Quentinvarquet/docker-phpservermonitor/master/img/install.png)
-
-* **Database Host:** mysql_container_name
-* **Database Name:** monitor
-* **Database User:** root
-* **Data Password:** your_password
+* **Database Host:** database
+* **Database Name:** phpservermonitor
+* **Database User:** phpservermonitor
+* **Data Password:** YOUR_PASSWORD
 * **Table Previx:** psm_
 
+-----
+
+## Know Bugs
+
+ - Servers whos status is cheched though "Ping" will fail when the "Update" button is pressed in the UI. This is because the UI runs as user 'www-data', where as the cron refresh task runs as root. You need root permissions to run SOCK_RAW on Unix systems, to the best of my knowledge there is no way around this. https://secure.php.net/manual/en/function.socket-create.php 
