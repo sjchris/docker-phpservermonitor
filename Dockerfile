@@ -1,5 +1,5 @@
 FROM php:7.2-apache-stretch
-MAINTAINER Austin St. Aubin <austinsaintaubin@gmail.com>
+# MAINTAINER Austin St. Aubin <austinsaintaubin@gmail.com>
 
 # Install Base
 RUN apt-get update
