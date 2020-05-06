@@ -14,7 +14,8 @@ RUN set -ex; \
     #docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr --with-png-dir=/usr --with-xpm-dir=/usr; \
     docker-php-ext-install pdo pdo_mysql mysqli sockets; \
     apt-get clean; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*; \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Expose Ports
 EXPOSE 80
@@ -65,6 +66,9 @@ RUN set -ex; \
 # VOLUME ${APACHE_DOCUMENT_ROOT}/config.php
 RUN touch ${APACHE_DOCUMENT_ROOT}/config.php; \
     chmod 0777 ${APACHE_DOCUMENT_ROOT}/config.php
+
+# Composer install dependencies
+RUN composer install --no-dev -o
 
 # Add Entrypoint & Start Commands
 COPY docker-entrypoint.sh /usr/local/bin/
