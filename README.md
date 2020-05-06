@@ -64,7 +64,7 @@ docker run -d --name phpservermonitor \
   -v /sessions \
   --dns=192.168.3.8 \
   -p 8080:80 \
-  -e TIME_ZONE='America/Chicago' \
+  -e TIME_ZONE='Europe/Amsterdam' \
   -e PSM_REFRESH_RATE_SECONDS=15 \
   -e PSM_AUTO_CONFIGURE=true \
   -e MYSQL_HOST=database \
