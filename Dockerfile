@@ -1,6 +1,10 @@
 FROM php:7.2-apache-stretch
 # MAINTAINER Austin St. Aubin <austinsaintaubin@gmail.com>
 
+# Build Environment Variables
+ENV VERSION 3.5.0
+ENV URL https://github.com/phpservermon/phpservermon/archive/v${VERSION}.tar.gz 
+
 # Install Base
 RUN apt-get update
 
@@ -45,10 +49,6 @@ RUN mkdir '/sessions'; \
     sed -i 's/;session.save_path\s*=.*/session.save_path = "\/sessions"/g' "$PHP_INI_DIR/php.ini"; \
     cat "$PHP_INI_DIR/php.ini" | grep 'session.save_path'
 VOLUME /sessions
-
-# Build Environment Variables
-ENV VERSION 3.5.0
-ENV URL https://github.com/phpservermon/phpservermon/archive/v${VERSION}.tar.gz 
 
 # Extract Repo HTML Files
 RUN set -ex; \
