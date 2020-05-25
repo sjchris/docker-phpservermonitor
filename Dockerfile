@@ -11,10 +11,10 @@ RUN apt-get update
 # Install & Setup Dependencies
 RUN set -ex; \
     apt-get install -y curl iputils-ping; \
-    apt-get install zip unzip git; \
+    apt-get install -y zip unzip git; \
     #docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr --with-png-dir=/usr --with-xpm-dir=/usr; \
     docker-php-ext-install pdo pdo_mysql mysqli sockets; \
-    apt-get clean; \
+    apt-get clean -y; \
     rm -rf /var/lib/apt/lists/*; \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
