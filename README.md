@@ -96,6 +96,6 @@ Configuration should be automatic if the envirmental varable is set `PSM_AUTO_CO
 
 -----
 
-## Know Bugs
-
- - Servers whos status is cheched though "Ping" will fail when the "Update" button is pressed in the UI. This is because the UI runs as user 'www-data', where as the cron refresh task runs as root. You need root permissions to run SOCK_RAW on Unix systems, to the best of my knowledge there is no way around this. https://secure.php.net/manual/en/function.socket-create.php 
+## PING check
+On Windows machines the PING will be checked using socket.
+For all other machines this will be checked using exec() and the terminal PING command.
