@@ -2,7 +2,7 @@ FROM php:7.4-apache
 # MAINTAINER Austin St. Aubin <austinsaintaubin@gmail.com>
 
 # Build Environment Variables
-ENV VERSION 3.5.0
+ENV VERSION 3.5.1
 ENV URL https://github.com/phpservermon/phpservermon/archive/v${VERSION}.tar.gz 
 
 # Install Base
